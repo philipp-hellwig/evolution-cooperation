@@ -9,5 +9,7 @@ Uncontroversially, the main use of language is communication. In turn, one impor
 
 ### Inheritance
 
+![image](https://github.com/philipp-hellwig/evolution-language-simulation/assets/108931950/2200f490-b36c-4bcd-a1b8-48d27bb7ec85)
+
 ### Features
 
