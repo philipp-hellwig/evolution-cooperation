@@ -11,6 +11,7 @@ The diagram below broadly illustrates the flow of all evolution simulations. Eac
 
 ### Inheritance & Traits
 Each agent has a DNA sequence that determines their probability to communicate and to do so maliciously or not. Triplets of the DNA sequence are randomly inherited either from the father (F) or mother (M) where each nucleotide has a chance to mutate ($\mu=0.01$).
+
 ![image](https://github.com/philipp-hellwig/evolution-language-simulation/assets/108931950/0a1e6d4d-edd4-4833-8cf3-317164e23138)
 
 ### Interactions
