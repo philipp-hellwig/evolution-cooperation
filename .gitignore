@@ -2,3 +2,7 @@ agents/__pycache__/base_agent.cpython-312.pyc
 agents/__pycache__/strength_agent.cpython-312.pyc
 agents/__pycache__/__init__.cpython-312.pyc
 figures
+simulations/agents/__pycache__/__init__.cpython-312.pyc
+simulations/agents/__pycache__/base_agent.cpython-312.pyc
+simulations/agents/__pycache__/strength_agent.cpython-312.pyc
+simulations/agents/__pycache__/bayesian_agent.cpython-312.pyc
