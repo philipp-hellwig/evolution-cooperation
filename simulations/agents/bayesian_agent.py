@@ -33,6 +33,10 @@ class BayesianAgent(Agent):
         a, b = self.beta_malintent[other]
         return st.beta.rvs(a, b)
 
+    def get_pos_interactions(self, other):
+        pos_interactions = self.beta_communicate[other][0] - self.communication
+        return pos_interactions
+
     def plot_beta(self, other, feature="both"):
         """
         other: another BayesianAgent
