@@ -7,7 +7,7 @@ from agents.base_agent import Agent
 
 class BayesianAgent(Agent):
     id = 0
-    smoothing = 0.0001
+    smoothing = 0.01
 
     def __init__(self, *args, **kwargs):
         super(BayesianAgent, self).__init__(*args, **kwargs)
