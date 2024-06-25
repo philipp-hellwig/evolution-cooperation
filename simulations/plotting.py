@@ -16,66 +16,63 @@ def plot_simulation_stats(simulation_stats, starvation_plot=False, intruders=[])
     _ = ax[0].set_ylim(0,17)
     _ = ax[0].vlines(intruders[1:], ymin=0, ymax=17, colors="black", linestyles="dotted")
 
-    _ = ax2 = ax[0].twinx()
-    _ = ax2.set_ylabel('Prior Probability')
-    x = list(range(0,17))
-    y = map(lambda x: x/16, x)
-    _ = ax2.plot(x, y)
-    _ = ax2.tick_params(axis='y')
-    _ = ax2.set_ylim(0, 1)  # Set range for right y-axis
     if starvation_plot:
         s_df = simulation_stats[simulation_stats["starvation"].notnull()]
         _ = ax[1].scatter(s_df["generation"], s_df["starvation"])
         _ = ax[1].set_ylim(0,30)
         _ = ax[1].set_xlabel("Generation")
         _ = ax[1].set_ylabel("Starvation")
-        _ = ax[1].vlines(intruders[1:], ymin=0, ymax=17, colors="black", linestyles="dotted")
+        _ = ax[1].vlines(intruders[1:], ymin=0, ymax=30, colors="black", linestyles="dotted")
         _ = ax[1].legend(["starvation", "intruders"])
         plt.show()
     else:
         plt.show()
 
+def plot_averaged_simulations(simulations: list[pd.DataFrame]):
+    concatenated = pd.concat(simulations)
+    _ = sns.lineplot(data=concatenated, x="generation", y="feature", hue="type", errorbar=("se", 1))
+    _ = plt.ylim(0,17)
+    plt.show()
+
 def plot_learned_distribution_matrix(gens: dict, figsize=(18,4), intruder=False):
-    fig, ax = plt.subplots(1, len(gens.keys()) , figsize=figsize)
+    fig, ax = plt.subplots(1, len(gens.keys())-1 , figsize=figsize)
     for i, generation in enumerate(gens.items()):
-        gen, agents = generation
-        comm_matrix = pd.DataFrame(columns=[str(agent.id) for agent in agents])
-        for agent in agents:
-            for other in agents:
-                comm_matrix.loc[agent.id, str(other.id)] = agent.beta_communicate[other][0]/sum(agent.beta_communicate[other]) if agent is not other else 0.
-        comm_matrix = comm_matrix.apply(pd.to_numeric, errors='coerce')
-        _ = sns.heatmap(comm_matrix, cmap="viridis", vmin=0, vmax=1, ax=ax[i])
-        _ = ax[i].set_title(f"Learned Dists after {gen} Generations")
-        _ = ax[i].set_xlabel("agent ids")
-        _ = ax[i].set_ylabel("agent ids")
+        if i>0:
+            gen, agents = generation
+            comm_matrix = pd.DataFrame(columns=[str(agent.id) for agent in agents])
+            for agent in agents:
+                for other in agents:
+                    comm_matrix.loc[agent.id, str(other.id)] = agent.beta_communicate[other][0]/sum(agent.beta_communicate[other]) if agent is not other else 0.
+            comm_matrix = comm_matrix.apply(pd.to_numeric, errors='coerce')
+            _ = sns.heatmap(comm_matrix, cmap="viridis", vmin=0, vmax=1, ax=ax[i-1])
+            _ = ax[i-1].set_title(f"Learned Dists after {gen} Generations")
+            _ = ax[i-1].set_xlabel("agent ids")
+            _ = ax[i-1].set_ylabel("agent ids")
     plt.show()
 
 
 def plot_communication_network(gen: list[BayesianAgent]):
     G = nx.Graph()
+    colormap = []
     for agent in gen:
         G.add_node(agent)
-    pos=nx.spring_layout(G)
+        colormap.append("red" if "intruder" in str(agent.id) else "black")
+    pos = nx.spring_layout(G)
     nx.layout
-    nx.draw_networkx_nodes(G,pos,node_color='green',node_size=75)
+    nx.draw_networkx_nodes(G, pos, node_color=colormap, node_size=75)
     for agent in gen:
         for other in gen:
             if agent is not other:
-                if agent.beta_communicate[other][0] > agent.communication:
-                    weight=agent.beta_communicate[other][0]-agent.communication + agent.beta_communicate[other][1]-(len(agent.dna)/6-agent.communication)
-                    if weight > 0:
-                        G.add_edge(agent, other, weight=weight)
+                weight = agent.beta_communicate[other][0]-agent.communication + agent.beta_communicate[other][1]-(len(agent.dna)/6-agent.communication)
+                if weight > 0:
+                    G.add_edge(agent, other, weight=weight)
     all_weights = []
-    #4 a. Iterate through the graph nodes to gather all the weights
     for (node1,node2,data) in G.edges(data=True):
         all_weights.append(data['weight'])
     unique_weights = list(set(all_weights))
-        #4 c. Plot the edges - one by one!
     for weight in unique_weights:
-        #4 d. Form a filtered list with just the weight you want to draw
         weighted_edges = [(node1,node2) for (node1,node2,edge_attr) in G.edges(data=True) if edge_attr['weight']==weight]
-        #4 e. I think multiplying by [num_nodes/sum(all_weights)] makes the graphs edges look cleaner
-        width = weight*len(gen)*5/sum(all_weights)
+        width = weight*len(gen)*3/sum(all_weights)
         nx.draw_networkx_edges(G,pos,edgelist=weighted_edges,width=width)
     plt.show()
 
