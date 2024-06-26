@@ -10,7 +10,6 @@ def plot_simulation_stats(simulation_stats, starvation_plot=False, intruders=[])
     simulation_stats: a data frame with columns "generation", "feature", "type", "starvation"
     return: a lineplot plotting 
     """
-    
     fig, ax = plt.subplots(1, 2, figsize=(14, 6))
     _ = sns.lineplot(data=simulation_stats.loc[:, simulation_stats.columns!="starvation"], x="generation", y="feature", hue="type", errorbar=("se", 1), ax=ax[0])
     _ = ax[0].set_ylim(0,17)
@@ -27,6 +26,7 @@ def plot_simulation_stats(simulation_stats, starvation_plot=False, intruders=[])
         plt.show()
     else:
         plt.show()
+    return fig
 
 def plot_averaged_simulations(simulations: list[pd.DataFrame]):
     concatenated = pd.concat(simulations)
@@ -49,7 +49,7 @@ def plot_learned_distribution_matrix(gens: dict, figsize=(18,4), intruder=False)
             _ = ax[i-1].set_xlabel("agent ids")
             _ = ax[i-1].set_ylabel("agent ids")
     plt.show()
-
+    return fig
 
 def plot_communication_network(gen: list[BayesianAgent]):
     G = nx.Graph()
