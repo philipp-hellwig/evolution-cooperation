@@ -2,8 +2,6 @@
 
 This project investigates how cooperation can evolve in agent-based models. 
 
-Uncontroversially, the main use of language is communication. In turn, one important function of communication is to coordinate cooperation.
-
 ## Simulations
 The diagram below broadly illustrates the flow of all evolution simulations. Each generation has a fixed population size and each generation's agents are descendents of the previous generation.
 
