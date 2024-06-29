@@ -24,8 +24,8 @@ class Agent():
         self.parents = parents
         self.dna = np.random.choice(Agent.nucleotides, 90) if parents is None else self.inherit(parents, mu)
         self.malintent, self.communication = self.features_from_dna(self.dna)
-        self.prior_malintent = self.malintent/(len(self.dna)/6)
-        self.prior_communication = self.communication/(len(self.dna)/6)
+        self.prob_malintent = self.malintent/(len(self.dna)/6)
+        self.prob_communication = self.communication/(len(self.dna)/6)
         self.food_counter = 5 # initial amount of food reserves an individual is born with
         self.reputation = 1
 
@@ -60,19 +60,19 @@ class Agent():
     # food opportunity interaction:
     def found_food(self, other):
         # decide to communicate or not:
-        if st.bernoulli(self.prior_communication).rvs(1):
+        if st.bernoulli(self.prob_communication).rvs(1):
             # other also has to be willing to communicate
-            if st.bernoulli(other.prior_communication).rvs(1):
+            if st.bernoulli(other.prob_communication).rvs(1):
                 # decide to try to steal food or not
-                if st.bernoulli(self.prior_malintent).rvs(1):
+                if st.bernoulli(self.prob_malintent).rvs(1):
                     # other has good intentions:
-                    if not st.bernoulli(other.prior_malintent).rvs(1):
+                    if not st.bernoulli(other.prob_malintent).rvs(1):
                         self.food_counter += Agent.food_stealing
                     # other also wants to steal the food:
                     else:
                         np.random.choice([self, other]).food_counter += Agent.food_stealing
                 else:
-                    if st.bernoulli(other.prior_malintent).rvs(1):
+                    if st.bernoulli(other.prob_malintent).rvs(1):
                         other.food_counter += Agent.food_stealing
                     else:
                         # share food:

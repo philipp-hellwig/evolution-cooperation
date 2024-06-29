@@ -7,22 +7,22 @@ from agents.bayesian_agent import BayesianAgent
 
 def plot_simulation_stats(simulation_stats, starvation_plot=False, intruders=[]):
     """
-    simulation_stats: a data frame with columns "generation", "feature", "type", "starvation"
+    simulation_stats: a data frame with columns "generation", "probability", "trait", "starvation"
     return: a lineplot plotting 
     """
     fig, ax = plt.subplots(1, 2, figsize=(14, 6))
-    _ = sns.lineplot(data=simulation_stats.loc[:, simulation_stats.columns!="starvation"], x="generation", y="feature", hue="type", errorbar=("se", 1), ax=ax[0])
-    _ = ax[0].set_ylim(0,17)
+    _ = sns.lineplot(data=simulation_stats.loc[:, simulation_stats.columns!="starvation"], x="generation", y="probability", hue="trait", errorbar=("se", 1), ax=ax[0])
+    _ = ax[0].set_ylim(0,1)
     _ = ax[0].vlines(intruders[1:], ymin=0, ymax=17, colors="black", linestyles="dotted")
 
     if starvation_plot:
         s_df = simulation_stats[simulation_stats["starvation"].notnull()]
         _ = ax[1].scatter(s_df["generation"], s_df["starvation"])
         _ = ax[1].set_ylim(0,30)
-        _ = ax[1].set_xlabel("Generation")
-        _ = ax[1].set_ylabel("Starvation")
+        _ = ax[1].set_xlabel("generation")
+        _ = ax[1].set_ylabel("starvation")
         _ = ax[1].vlines(intruders[1:], ymin=0, ymax=30, colors="black", linestyles="dotted")
-        _ = ax[1].legend(["starvation", "intruders"])
+        _ = ax[1].legend(["starvation", "free riders"])
         plt.show()
     else:
         plt.show()
@@ -30,8 +30,8 @@ def plot_simulation_stats(simulation_stats, starvation_plot=False, intruders=[])
 
 def plot_averaged_simulations(simulations: list[pd.DataFrame]):
     concatenated = pd.concat(simulations)
-    _ = sns.lineplot(data=concatenated, x="generation", y="feature", hue="type", errorbar=("se", 1))
-    _ = plt.ylim(0,17)
+    _ = sns.lineplot(data=concatenated, x="generation", y="probability", hue="trait", errorbar=("se", 1))
+    _ = plt.ylim(0,1)
     plt.show()
 
 def plot_learned_distribution_matrix(gens: dict, figsize=(18,4), intruder=False):
@@ -44,7 +44,7 @@ def plot_learned_distribution_matrix(gens: dict, figsize=(18,4), intruder=False)
                 for other in agents:
                     comm_matrix.loc[agent.id, str(other.id)] = agent.beta_communicate[other][0]/sum(agent.beta_communicate[other]) if agent is not other else 0.
             comm_matrix = comm_matrix.apply(pd.to_numeric, errors='coerce')
-            _ = sns.heatmap(comm_matrix, cmap="viridis", vmin=0, vmax=1, ax=ax[i-1])
+            _ = sns.heatmap(comm_matrix, cmap="viridis", vmin=0, vmax=1, ax=ax[i-1], cbar_kws={'label': 'P(communicate|agent)'})
             _ = ax[i-1].set_title(f"Learned Dists after {gen} Generations")
             _ = ax[i-1].set_xlabel("agent ids")
             _ = ax[i-1].set_ylabel("agent ids")

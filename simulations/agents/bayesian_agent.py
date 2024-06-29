@@ -12,8 +12,6 @@ class BayesianAgent(Agent):
     def __init__(self, *args, **kwargs):
         super(BayesianAgent, self).__init__(*args, **kwargs)
         self.cohort = []
-        self.beta_communicate = self.prior_communication
-        self.beta_malintent = self.malintent
         self.last_interaction = []
         self.id = BayesianAgent.id
         self.reputation = 1
