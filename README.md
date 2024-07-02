@@ -1,6 +1,8 @@
 # Evolution of Cooperation
 
-This project investigates how cooperation can evolve in agent-based models. 
+This project investigates how cooperation can evolve in agent-based models. The simulations suggest that evolution of cooperation is more plausible under reputation-based partner choice (RBPC) models than indirect reciprocity (IR) models. Furthermore, the simulations show that gossip can function as a mechanism to mitigate the effect of free riders (agents that take advantage of cooperative agents).
+
+For the full paper, see the pdf in the repository.
 
 ## Simulations
 The diagram below broadly illustrates the flow of all evolution simulations. Each generation has a fixed population size and each generation's agents are descendents of the previous generation.
